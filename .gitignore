@@ -13,4 +13,5 @@ wheels/
 
 *.jsonl
 *.json
-*/notebooks/cache/*
+*/notebooks/*
+data/*
