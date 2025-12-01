@@ -10,8 +10,8 @@ from pipeline.db_init import create_connection, close_connection
 from pipeline.upsert import insert_chunk_safe
 from pipeline.vectorize import encode_passage, count_tokens
 
-DATA_PATH = Path("../data/sc_elibrary_decisions_text_combined_cleaned.jsonl")
-CHECKPOINT_PATH = Path("../data/chunking_checkpoint.txt")
+DATA_PATH = Path("./data/sc_elibrary_decisions_text_combined_cleaned.jsonl")
+CHECKPOINT_PATH = Path("./data/chunking_checkpoint.txt")
 
 
 def load_checkpoint() -> Optional[str]:
@@ -37,6 +37,7 @@ def chunking_and_upsert(conn) -> None:
 
     with DATA_PATH.open("r", encoding="utf-8") as f:
         for line_number, line in enumerate(f):
+            checkpoint = True
             try:
                 rec = json.loads(line)
             except json.JSONDecodeError as e:
@@ -64,11 +65,17 @@ def chunking_and_upsert(conn) -> None:
             )
 
             for ch in chunks:
-                cid = insert_chunk_safe(conn, ch)
-                print("   ✅ Inserted chunk id:", cid)
-
-            # Save checkpoint as last processed unique URL
-            save_checkpoint(url)
+                try:
+                    cid = insert_chunk_safe(conn, ch)
+                    print("   ✅ Inserted chunk id:", cid)
+                except Exception as e:
+                    print("   ❌ Failed to insert chunk:", e)
+                    checkpoint = False
+                    break # stop processing further chunks for this record
+            
+            if checkpoint:
+                # Save checkpoint as last processed unique URL
+                save_checkpoint(url)
 
         print("✅ Chunking complete!")
 

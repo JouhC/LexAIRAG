@@ -37,7 +37,10 @@ def main():
 
     conn = create_connection()
     register_vector(conn)
-    hits = search_chunks(conn, MODEL, "Ano ang final ruling sa petition?",5)
+    hits = search_chunks(conn, MODEL, "child abuse",1)
     for h in hits:
-        print(h["case_no"], h["section"], h["chunk_index"], "similarity:", h["similarity"])
+        print(h["case_no"], h["section"], h["chunk_index"], "similarity:", h["similarity"], h["preview"])
     close_connection(conn)
+
+if __name__ == "__main__":
+    main()

@@ -24,7 +24,6 @@ class Settings(BaseSettings):
         user = quote_plus(self.DB_USER)
         password = quote_plus(self.DB_PASSWORD)
         host = self.DB_HOST
-        return f"postgresql://postgres.fpneuorcexvaxdweztdc:{password}@aws-1-ap-southeast-2.pooler.supabase.com:5432/postgres"
-        #return f"postgresql://{user}:{password}@{host}:{self.DB_PORT}/{self.DB_NAME}?sslmode=require"
+        return f"postgresql://{user}:{password}@{host}:{self.DB_PORT}/{self.DB_NAME}?sslmode=require"
 
 settings = Settings()

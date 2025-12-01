@@ -4,7 +4,6 @@ from config import settings
 
 def create_connection():
     try:
-        print(settings.DATABASE_URL)
         conn = psycopg.connect(
             dbname=settings.DB_NAME,
             user=settings.DB_USER,
