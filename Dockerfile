@@ -1,5 +1,5 @@
 # Use uv's official Python 3.13 base image
-FROM ghcr.io/astral-sh/uv:python3.13-bookworm
+FROM ghcr.io/astral-sh/uv:python3.13-bookworm-slim
 
 WORKDIR /app
 
@@ -9,10 +9,10 @@ ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=/app
 
 # If you need system packages (psycopg build, etc.), uncomment:
-# RUN apt-get update && apt-get install -y --no-install-recommends \
-#     build-essential \
-#     git \
-#     && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    git \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy dependency metadata first for caching
 COPY pyproject.toml uv.lock* ./
