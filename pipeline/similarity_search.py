@@ -13,7 +13,7 @@ def search_chunks(conn, model, query: str, k: int = 5):
             case_no,
             section,
             chunk_index,
-            substring(text for 300) AS preview,
+            text,
             embedding <=> %s AS distance
         FROM decision_chunks
         WHERE embedding IS NOT NULL
