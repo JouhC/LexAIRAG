@@ -18,6 +18,8 @@ class Settings(BaseSettings):
     DB_PASSWORD: str
     DB_HOST: str
     DB_PORT: int = 5432
+    DEFAULT_API_URL: str = "http://localhost:8000"
+
     @property
     def DATABASE_URL(self) -> str:
         # URL-encode user/pass to handle special characters safely
