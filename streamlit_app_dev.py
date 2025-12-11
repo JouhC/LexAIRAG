@@ -8,7 +8,7 @@ from pgvector.psycopg import register_vector
 
 from pipeline.db_init import create_connection, close_connection
 from pipeline.similarity_search import search_chunks  # or inline the function below
-
+import time
 
 # If you prefer, paste your search_chunks here instead of importing:
 #
@@ -45,7 +45,7 @@ from pipeline.similarity_search import search_chunks  # or inline the function b
 def load_model():
     # Change this to the exact name/path of the model you’re using
     # e.g. "BAAI/bge-m3" or your local fine-tuned model path
-    model = SentenceTransformer("BAAI/bge-m3")
+    model = SentenceTransformer("BAAI/bge-m3", device="cuda")
     return model
 
 
@@ -86,13 +86,15 @@ def main():
         if not query.strip():
             st.warning("Please enter a query first.")
             return
-
+        start = time.perf_counter()
         conn = get_connection()
         model = load_model()
 
         with st.spinner("Running similarity search..."):
             try:
                 results = search_chunks(conn, model, query, k=top_k_choice)
+                elapsed = time.perf_counter() - start
+                st.caption(f"⏱ Time elapsed: {elapsed:.3f} seconds")
             except Exception as e:
                 st.error(f"Error while searching: {e}")
                 return

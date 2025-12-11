@@ -2,7 +2,9 @@ from __future__ import annotations
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from urllib.parse import quote_plus
-
+from typing import List, Optional, Any
+from pydantic import AnyHttpUrl, field_validator
+import json
 
 class Settings(BaseSettings):
     # --- config for pydantic-settings v2 ---
@@ -19,6 +21,24 @@ class Settings(BaseSettings):
     DB_HOST: str
     DB_PORT: int = 5432
     DEFAULT_API_URL: str = "http://localhost:8000"
+    TEST: str = ""
+
+    @field_validator("TEST", mode="after")
+    @classmethod
+    def parse_origins(cls, v: Any) -> Any:
+        if v is None or v == "":
+            return []
+
+        if isinstance(v, str):
+            v = v.strip()
+            print([item.strip() for item in v.split(",") if item.strip()])
+            # If JSON string, load it
+            if v.startswith("["):
+                return json.loads(v)
+            # If comma-separated
+            return [item.strip() for item in v.split(",") if item.strip()]
+
+        return v
 
     @property
     def DATABASE_URL(self) -> str:

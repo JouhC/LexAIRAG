@@ -17,20 +17,9 @@ DECISIONS_INDEX_URL = f"{BASE_URL}/"   # change if the real path is e.g. "/decis
 
 REQUEST_DELAY = 1.0      # polite delay between requests
 MAX_DECISIONS_PER_MONTH: Optional[int] = None   # e.g. 5 for testing, None for all
-OUTPUT_JSONL = "sc_elibrary_decisions_text.jsonl"
 
 MONTH_ABBRS = {"Jan", "Feb", "Mar", "Apr", "May", "Jun",
                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"}
-
-
-CACHE_DIR = Path("cache")
-CACHE_DIR.mkdir(exist_ok=True)
-
-CHECKPOINT_FILE = Path("checkpoint_done.txt")
-if CHECKPOINT_FILE.exists():
-    done_urls = set(CHECKPOINT_FILE.read_text().splitlines())
-else:
-    done_urls = set()
 
 session = requests.Session()
 session.headers.update({
@@ -206,7 +195,14 @@ def extract_text_from_decision_url(url: str) -> Tuple[str, str]:
 
     return extract_text_from_html_page(r.text)
 
-def crawl_decisions():
+def crawl_decisions(output_file, cache_dir, checkpoint_file):
+    cache_dir = Path(cache_dir).mkdir(exist_ok=True)
+
+    if checkpoint_file.exists():
+        done_urls = set(checkpoint_file.read_text().splitlines())
+    else:
+        done_urls = set()
+
     month_links = find_month_links(DECISIONS_INDEX_URL)
     print(f"Found {len(month_links)} month links")
     
@@ -257,11 +253,11 @@ def crawl_decisions():
 
 
     # write JSONL
-    with open(OUTPUT_JSONL, "w", encoding="utf-8") as f:
+    with open(output_file, "w", encoding="utf-8") as f:
         for row in rows:
             f.write(json.dumps(row, ensure_ascii=False) + "\n")
 
-    print(f"\nSaved {len(rows)} decisions to {OUTPUT_JSONL}")
+    print(f"\nSaved {len(rows)} decisions to {output_file}")
 
 def main():
     crawl_decisions()

@@ -139,6 +139,15 @@ def unique_constraint_decision_chunks(conn):
     with conn.cursor() as cur:
         cur.execute(query)
 
+def run_db_init(conn):
+    initialize_db(conn)
+    chunks_table_init(conn)
+    indexes_table_init(conn)
+    auto_update_updateat(conn)
+    unique_constraint_decision_chunks(conn)
+
+    print("✅ Database initialized successfully.")
+
 def main():
     conn = create_connection()
     if conn:
