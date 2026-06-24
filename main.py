@@ -10,7 +10,7 @@ from pipeline.db_init import create_connection, close_connection
 from pipeline.upsert import insert_chunk_safe
 from pipeline.vectorize import encode_passage, count_tokens
 
-DATA_PATH = Path("./data/sc_elibrary_decisions_text_combined_cleaned.jsonl")
+DATA_PATH = Path("./data/sc_decisions_cleaned.jsonl")
 CHECKPOINT_PATH = Path("./data/chunking_checkpoint.txt")
 
 
@@ -122,7 +122,7 @@ def main() -> None:
         tokenizer = AutoTokenizer.from_pretrained("BAAI/bge-m3")
 
         # 1. Chunk + upsert (resumable via checkpoint)
-        chunking_and_upsert(conn)
+        #chunking_and_upsert(conn)
 
         # 2. Embed chunks that are still missing embeddings
         vectorize_and_upsert(conn, model, tokenizer)
