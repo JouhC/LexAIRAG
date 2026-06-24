@@ -1,6 +1,6 @@
-# PhilLexRAG
+# LexAIRAG (PhilLexRAG)
 
-PhilLexRAG is a retrieval-augmented search project for Philippine legal decisions. It scrapes Supreme Court decision text, chunks decisions into legal sections, embeds the chunks with `BAAI/bge-m3`, stores them in PostgreSQL with `pgvector`, and exposes semantic search through FastAPI and Streamlit.
+LexAIRAG, also documented here as PhilLexRAG, is a retrieval-augmented search project for Philippine legal decisions. It scrapes Supreme Court decision text, chunks decisions into legal sections, embeds the chunks with `BAAI/bge-m3`, stores them in PostgreSQL with `pgvector`, and exposes semantic search through FastAPI and Streamlit.
 
 ## What It Does
 
@@ -210,3 +210,7 @@ uv run uvicorn api.main:app --host 0.0.0.0 --port 8000
 - Cosine distance is converted to an approximate similarity score with `1 - distance / 2`.
 - The database schema expects the `pgvector` extension to be available before vector indexes can be created.
 - Scraping should be run responsibly with delays and checkpointing enabled.
+
+## Portfolio Note
+
+LexAIRAG is featured in my portfolio as a legal RAG system that connects web scraping, legal-text chunking, vector search, FastAPI, PostgreSQL, and Streamlit into one applied AI workflow.
